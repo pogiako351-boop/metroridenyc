@@ -26,7 +26,7 @@
       "favicon": "./assets/images/metroride-nyc-icon.png",
       "name": "MetroRide NYC",
       "shortName": "MetroRide NYC",
-      "description": "Your intelligent NYC subway companion \u2014 live arrivals, OMNY tracking & AI alerts.",
+      "description": "Your intelligent NYC subway companion — live arrivals, OMNY tracking & AI alerts.",
       "themeColor": "#121212",
       "backgroundColor": "#121212",
       "scope": "/nyc/",
@@ -45,7 +45,8 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true
+      "typedRoutes": true,
+      "baseUrl": "/73c3f9fc-4f31-47ac-852f-f8a35690974c/dev-preview/"
     }
   }
 }
