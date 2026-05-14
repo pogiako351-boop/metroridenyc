@@ -6,6 +6,7 @@ import { Fonts } from '@/constants/Typography';
 import { useMTATrains } from '@/hooks/useMTA';
 import TrainCard from '@/components/TrainCard';
 import { Ionicons } from '@expo/vector-icons';
+import BrandHeader from '@/components/BrandHeader';
 
 const ALL_LINES = ['1', '2', '3', '4', '5', '6', '7', 'A', 'C', 'E', 'B', 'D', 'F', 'M', 'G', 'J', 'Z', 'L', 'N', 'Q', 'R', 'W', 'S'];
 
@@ -33,36 +34,38 @@ export default function TrainsScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <Text style={{ fontFamily: Fonts.bold, fontSize: 22, color: Colors.white }}>
-            Live Trains
-          </Text>
-          {/* Feed status indicator */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            {loading ? (
-              <ActivityIndicator size="small" color={Colors.gold} />
-            ) : (
-              <View
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: 4,
-                  backgroundColor: feedError && !isLiveFeed ? Colors.red : Colors.green,
-                }}
-              />
-            )}
-            <Text style={{ fontFamily: Fonts.regular, fontSize: 11, color: Colors.muted }}>
-              {loading
-                ? 'Connecting...'
-                : feedError && !isLiveFeed
-                ? 'Offline'
-                : lastUpdateSec !== null
-                ? `Updated ${lastUpdateSec}s ago`
-                : 'Live'}
-            </Text>
-          </View>
-        </View>
+        {/* Brand Header */}
+        <BrandHeader
+          rightAction={
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+              {loading ? (
+                <ActivityIndicator size="small" color={Colors.gold} />
+              ) : (
+                <View
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: feedError && !isLiveFeed ? Colors.red : Colors.green,
+                  }}
+                />
+              )}
+              <Text style={{ fontFamily: Fonts.regular, fontSize: 10, color: Colors.muted }}>
+                {loading
+                  ? '...'
+                  : feedError && !isLiveFeed
+                  ? 'Offline'
+                  : lastUpdateSec !== null
+                  ? `${lastUpdateSec}s`
+                  : 'Live'}
+              </Text>
+            </View>
+          }
+        />
+        {/* Section title */}
+        <Text style={{ fontFamily: Fonts.bold, fontSize: 20, color: Colors.white, marginBottom: 12 }}>
+          Live Trains
+        </Text>
 
         {/* Feed error banner */}
         {feedError && !isLiveFeed && (
@@ -192,6 +195,21 @@ export default function TrainsScreen() {
             </Text>
           </View>
         </View>
+
+        {/* Legal footer */}
+        <Text
+          style={{
+            fontFamily: Fonts.regular,
+            fontSize: 10,
+            color: Colors.muted + 'BB',
+            textAlign: 'center',
+            marginTop: 16,
+            lineHeight: 15,
+          }}
+        >
+          By using MetroRide, you agree to our Terms & Privacy.{'\n'}
+          Not affiliated with the MTA.
+        </Text>
       </ScrollView>
     </View>
   );

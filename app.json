@@ -1,43 +1,51 @@
 {
   "expo": {
-    "name": "Metrogenie",
-    "slug": "metrogenie",
+    "name": "MetroRide NYC",
+    "slug": "metroride-nyc",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/mgenie-app-icon.png",
     "scheme": "fastshot",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.metroride.nyc"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#10192b"
+        "foregroundImage": "./assets/images/mgenie-app-icon.png",
+        "backgroundColor": "#1A1A1A"
       },
+      "package": "com.metroride.nyc",
       "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
       "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/mgenie-app-icon.png",
+      "name": "MetroRide NYC",
+      "shortName": "MetroRide",
+      "description": "Your intelligent NYC subway companion — live arrivals, OMNY tracking & AI alerts.",
+      "themeColor": "#1A1A1A",
+      "backgroundColor": "#1A1A1A",
+      "scope": "/nyc/",
+      "startUrl": "/nyc/"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/mgenie-app-icon.png",
+          "imageWidth": 220,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#1A1A1A"
         }
       ]
     ],
     "experiments": {
-      "typedRoutes": true,
-      "baseUrl": "/73c3f9fc-4f31-47ac-852f-f8a35690974c/dev-preview/"
+      "typedRoutes": true
     }
   }
 }

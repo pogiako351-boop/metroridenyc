@@ -91,6 +91,7 @@ const MIME_TYPES = {
   '.js': 'application/javascript',
   '.hbc': 'application/javascript',
   '.json': 'application/json',
+  '.webmanifest': 'application/manifest+json',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
@@ -102,6 +103,18 @@ const MIME_TYPES = {
   '.woff2': 'font/woff2',
 };
 
+// PWA manifest injection — appended to <head> of every HTML response
+const PWA_HEAD_INJECT = `
+  <meta name="application-name" content="MetroRide NYC" />
+  <meta name="apple-mobile-web-app-title" content="MetroRide" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1A1A1A" />
+  <meta name="description" content="Your intelligent NYC subway companion — live arrivals, OMNY tracking &amp; AI-powered alerts." />
+  <link rel="manifest" href="/public/manifest.json" />
+  <link rel="apple-touch-icon" href="/assets/images/mgenie-app-icon.png" />
+`;
+
 function getMimeType(filePath) {
   const ext = path.extname(filePath).toLowerCase();
   return MIME_TYPES[ext] || 'application/octet-stream';
@@ -109,7 +122,18 @@ function getMimeType(filePath) {
 
 function serveFile(filePath, res) {
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-    res.writeHead(200, { 'Content-Type': getMimeType(filePath) });
+    const mimeType = getMimeType(filePath);
+    if (mimeType === 'text/html' || filePath.endsWith('.html')) {
+      // Inject PWA meta tags into HTML files
+      const html = fs.readFileSync(filePath, 'utf8');
+      const injected = html
+        .replace('<title>Metrogenie</title>', '<title>MetroRide NYC</title>')
+        .replace('<head>', `<head>${PWA_HEAD_INJECT}`);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(injected);
+      return true;
+    }
+    res.writeHead(200, { 'Content-Type': mimeType });
     fs.createReadStream(filePath).pipe(res);
     return true;
   }

@@ -25,6 +25,7 @@ import AISentinelBanner from '@/components/AISentinelBanner';
 import { submitCommunityReport } from '@/lib/supabase';
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
+import BrandHeader from '@/components/BrandHeader';
 
 const SENTINEL_MESSAGES = [
   'Ripple Effect Delay ahead on A line. Switch to C recommended.',
@@ -97,38 +98,25 @@ export default function HomeScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 14,
-          }}
-        >
-          <View>
-            <Text style={{ fontFamily: Fonts.bold, fontSize: 22, color: Colors.white }}>
-              MetroRide NYC
-            </Text>
-            <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted }}>
-              NYC Subway Companion
-            </Text>
-          </View>
-          <Pressable
-            onPress={() => setReportModal(true)}
-            style={{
-              backgroundColor: Colors.card,
-              borderRadius: 20,
-              borderCurve: 'continuous',
-              padding: 8,
-              borderWidth: 1,
-              borderColor: Colors.border,
-            }}
-            hitSlop={8}
-          >
-            <Ionicons name="flag" size={18} color={Colors.muted} />
-          </Pressable>
-        </View>
+        {/* Brand Header */}
+        <BrandHeader
+          rightAction={
+            <Pressable
+              onPress={() => setReportModal(true)}
+              style={{
+                backgroundColor: Colors.card,
+                borderRadius: 20,
+                borderCurve: 'continuous',
+                padding: 8,
+                borderWidth: 1,
+                borderColor: Colors.border,
+              }}
+              hitSlop={8}
+            >
+              <Ionicons name="flag" size={18} color={Colors.muted} />
+            </Pressable>
+          }
+        />
 
         {/* Vibe Alert */}
         <VibeAlert temp={72} crowdLevel="Moderate Crowds" station="Times Sq" />
@@ -180,6 +168,7 @@ export default function HomeScreen() {
 
         {/* Nearest Trains */}
         <View style={{ marginBottom: 8 }}>
+
           <Text
             style={{
               fontFamily: Fonts.bold,
@@ -203,6 +192,21 @@ export default function HomeScreen() {
             ))
           )}
         </View>
+
+        {/* Legal footer */}
+        <Text
+          style={{
+            fontFamily: Fonts.regular,
+            fontSize: 10,
+            color: Colors.muted + 'BB',
+            textAlign: 'center',
+            marginTop: 16,
+            lineHeight: 15,
+          }}
+        >
+          By using MetroRide, you agree to our Terms & Privacy.{'\n'}
+          Not affiliated with the MTA.
+        </Text>
       </ScrollView>
 
       {/* Community Report Modal */}

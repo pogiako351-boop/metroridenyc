@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getSavedRoutes, addSavedRoute, deleteSavedRoute } from '@/lib/supabase';
 import { adapty, shouldEnableMock } from 'react-native-adapty';
 import { router } from 'expo-router';
+import LegalModal from '@/components/LegalModal';
 
 const ADAPTY_KEY = process.env.EXPO_PUBLIC_ADAPTY_API_KEY ?? 'mock';
 
@@ -108,6 +109,7 @@ export default function ProfileScreen() {
   const [endStation, setEndStation] = useState('');
   const [savingRoute, setSavingRoute] = useState(false);
   const [proLoading, setProLoading] = useState(false);
+  const [legalModal, setLegalModal] = useState(false);
 
   useEffect(() => {
     if (!shouldEnableMock()) {
@@ -445,6 +447,47 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Legal & Privacy */}
+        <Pressable
+          onPress={() => setLegalModal(true)}
+          style={({ pressed }) => ({
+            backgroundColor: pressed ? Colors.cardHigh : Colors.card,
+            borderRadius: 20,
+            borderCurve: 'continuous',
+            padding: 18,
+            borderWidth: 1,
+            borderColor: Colors.border,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 12,
+          })}
+        >
+          <View
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              borderCurve: 'continuous',
+              backgroundColor: Colors.gold + '1A',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderWidth: 1,
+              borderColor: Colors.gold + '2E',
+            }}
+          >
+            <Ionicons name="shield-checkmark-outline" size={18} color={Colors.gold} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.white }}>
+              Legal & Privacy
+            </Text>
+            <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted }}>
+              Disclaimer, data policy & zero-footprint protocol
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={16} color={Colors.muted} />
+        </Pressable>
+
         {/* Sign Out — shown only for real (non-anonymous) users */}
         {!isAnonymous && (
           <Pressable
@@ -465,6 +508,9 @@ export default function ProfileScreen() {
           </Pressable>
         )}
       </ScrollView>
+
+      {/* Legal Modal */}
+      <LegalModal visible={legalModal} onClose={() => setLegalModal(false)} />
 
       {/* Add Route Modal */}
       <Modal
