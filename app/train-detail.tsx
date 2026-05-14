@@ -9,8 +9,9 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, SubwayLines } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
-import { useTrainCars } from '@/hooks/useMTA';
+import { useTrainCars, useTrainArrival } from '@/hooks/useMTA';
 import { Ionicons } from '@expo/vector-icons';
+import ArrivalBadge from '@/components/ArrivalBadge';
 
 const OCCUPANCY_CONFIG = {
   quiet: { color: Colors.green, label: 'Quiet', icon: '😌', bars: 1 },
@@ -38,13 +39,22 @@ function OccupancyBar({ level }: { level: 'quiet' | 'moderate' | 'busy' }) {
 }
 
 export default function TrainDetailScreen() {
-  const { line = 'A' } = useLocalSearchParams<{ line: string }>();
+  const { line = 'A', vehicleId = '' } = useLocalSearchParams<{ line: string; vehicleId?: string }>();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { cars, isGhost } = useTrainCars(line);
   const lineStyle = SubwayLines[line] ?? { bg: Colors.muted, text: '#fff' };
 
-  const destination = line === 'A' ? 'to 207 St – Inwood' : line === 'C' ? 'to 168 St' : `to ${line} Terminal`;
+  // Live arrival countdown for this specific train
+  const {
+    arrivalTimestampMs,
+    loading: arrivalLoading,
+    error: arrivalError,
+  } = useTrainArrival(line, vehicleId);
+
+  const destination = line === 'A' ? 'to 207 St – Inwood'
+    : line === 'C' ? 'to 168 St'
+    : `to ${line} Terminal`;
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bg }}>
@@ -63,6 +73,8 @@ export default function TrainDetailScreen() {
           <Pressable onPress={() => router.back()} hitSlop={10}>
             <Ionicons name="chevron-back" size={24} color={Colors.white} />
           </Pressable>
+
+          {/* Line badge */}
           <View
             style={{
               width: 40,
@@ -77,6 +89,8 @@ export default function TrainDetailScreen() {
               {line}
             </Text>
           </View>
+
+          {/* Destination + ghost status */}
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: Fonts.bold, fontSize: 16, color: Colors.white }}>
               {destination}
@@ -89,6 +103,19 @@ export default function TrainDetailScreen() {
                 </Text>
               </View>
             )}
+          </View>
+
+          {/* Live arrival countdown in header */}
+          <View style={{ alignItems: 'flex-end' }}>
+            <ArrivalBadge
+              arrivalTimestampMs={arrivalTimestampMs}
+              isLoading={arrivalLoading}
+              hasError={!!arrivalError && arrivalTimestampMs === null}
+              size="large"
+            />
+            <Text style={{ fontFamily: Fonts.regular, fontSize: 10, color: Colors.muted, marginTop: 2 }}>
+              {arrivalError && arrivalTimestampMs === null ? 'estimated' : 'next arrival'}
+            </Text>
           </View>
         </View>
       </View>

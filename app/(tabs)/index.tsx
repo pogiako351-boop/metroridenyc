@@ -38,7 +38,7 @@ export default function HomeScreen() {
   const { tapCount, tapping, tap, isUnlimited, ridesLeft, progress, fetchTaps } = useOMNY(
     user?.id ?? null
   );
-  const { trains, loading: trainsLoading } = useMTATrains();
+  const { trains, loading: trainsLoading, feedError, feedTimestamp } = useMTATrains();
   const [sentinelMsg] = useState(SENTINEL_MESSAGES[0]);
   const [showSentinel, setShowSentinel] = useState(true);
   const [reportModal, setReportModal] = useState(false);
@@ -194,7 +194,12 @@ export default function HomeScreen() {
             <ActivityIndicator color={Colors.gold} style={{ marginVertical: 20 }} />
           ) : (
             trains.map((train) => (
-              <TrainCard key={`${train.line}-${train.vehicleId}`} train={train} />
+              <TrainCard
+                key={`${train.line}-${train.vehicleId}`}
+                train={train}
+                isLoading={trainsLoading}
+                hasError={!!feedError && feedTimestamp === 0}
+              />
             ))
           )}
         </View>

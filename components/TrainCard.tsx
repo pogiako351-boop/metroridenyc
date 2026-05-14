@@ -4,9 +4,12 @@ import { Colors, SubwayLines } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { TrainArrival } from '@/hooks/useMTA';
 import { useRouter } from 'expo-router';
+import ArrivalBadge from './ArrivalBadge';
 
 interface Props {
   train: TrainArrival;
+  isLoading?: boolean;
+  hasError?: boolean;
 }
 
 const OCCUPANCY_DOTS = {
@@ -15,14 +18,14 @@ const OCCUPANCY_DOTS = {
   high: [Colors.red, Colors.muted, Colors.muted],
 };
 
-export default function TrainCard({ train }: Props) {
+export default function TrainCard({ train, isLoading = false, hasError = false }: Props) {
   const router = useRouter();
   const lineStyle = SubwayLines[train.line] ?? { bg: Colors.muted, text: Colors.white };
   const dots = OCCUPANCY_DOTS[train.occupancy];
 
   return (
     <Pressable
-      onPress={() => router.push({ pathname: '/train-detail', params: { line: train.line } })}
+      onPress={() => router.push({ pathname: '/train-detail', params: { line: train.line, vehicleId: train.vehicleId } })}
       style={({ pressed }) => ({
         backgroundColor: pressed ? Colors.cardHigh : Colors.card,
         borderRadius: 14,
@@ -78,17 +81,13 @@ export default function TrainCard({ train }: Props) {
         )}
       </View>
 
-      {/* ETA */}
-      <Text
-        style={{
-          fontFamily: Fonts.bold,
-          fontSize: 18,
-          color: Colors.gold,
-          fontVariant: ['tabular-nums'],
-        }}
-      >
-        {train.minutesAway} min
-      </Text>
+      {/* Live countdown */}
+      <ArrivalBadge
+        arrivalTimestampMs={train.arrivalTimestampMs}
+        isLoading={isLoading}
+        hasError={hasError}
+        size="small"
+      />
 
       {/* Occupancy dots */}
       <View style={{ flexDirection: 'row', gap: 3 }}>
