@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuth } from '@fastshot/auth';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { useOMNY } from '@/hooks/useOMNY';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Ionicons } from '@expo/vector-icons';
 
 const FREE_RIDE_VALUE = 2.9; // NYC subway fare
@@ -57,7 +57,7 @@ function BarChart({ data }: { data: { day: Date; count: number }[] }) {
 
 export default function SavingsScreen() {
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useCurrentUser();
   const { tapCount, taps, loading, isUnlimited, dailyTaps } = useOMNY(user?.id ?? null);
 
   // Calculate how many free rides have been earned (every 12 taps = unlimited window)
@@ -68,7 +68,7 @@ export default function SavingsScreen() {
   const totalSaved = (freeRidesEarned * FREE_RIDE_VALUE).toFixed(2);
   const annualProjection = (freeRidesEarned * 52 * FREE_RIDE_VALUE).toFixed(0);
 
-  // Unlimited mode activations from taps history (mock — every 12 taps)
+  // Unlimited mode activations from taps history (every 12 taps)
   const unlimitedActivations = useMemo(() => {
     if (taps.length < 12) return [];
     const acts: { date: string; label: string }[] = [];
@@ -85,16 +85,10 @@ export default function SavingsScreen() {
     return acts.slice(-5);
   }, [taps]);
 
-  if (!user) {
+  if (authLoading) {
     return (
       <View style={{ flex: 1, backgroundColor: Colors.bg, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ fontSize: 40, marginBottom: 16 }}>💰</Text>
-        <Text style={{ fontFamily: Fonts.bold, fontSize: 18, color: Colors.white, marginBottom: 8 }}>
-          Track Your Savings
-        </Text>
-        <Text style={{ fontFamily: Fonts.regular, fontSize: 14, color: Colors.muted, textAlign: 'center', paddingHorizontal: 32 }}>
-          Sign in to see how much you&apos;ve saved with MetroRide
-        </Text>
+        <ActivityIndicator color={Colors.gold} />
       </View>
     );
   }

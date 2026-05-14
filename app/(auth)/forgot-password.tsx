@@ -6,19 +6,38 @@ import {
   Pressable,
   KeyboardAvoidingView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { Link } from 'expo-router';
-import { useAuth } from '@fastshot/auth';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { supabase } from '@/lib/supabase';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');
-  const { resetPassword, isLoading, error, pendingPasswordReset } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
   const insets = useSafeAreaInsets();
 
-  if (pendingPasswordReset) {
+  const handleReset = async () => {
+    if (!email.trim()) return;
+    setError(null);
+    setIsLoading(true);
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.trim());
+      if (resetError) {
+        setError(resetError.message);
+      } else {
+        setSent(true);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (sent) {
     return (
       <View
         style={{
@@ -59,7 +78,7 @@ export default function ForgotPasswordScreen() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, backgroundColor: Colors.bg }}
-      behavior="padding"
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <View
         style={{
@@ -99,13 +118,13 @@ export default function ForgotPasswordScreen() {
         />
 
         {error && (
-          <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.red }}>
-            {error.message}
+          <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.red }} selectable>
+            {error}
           </Text>
         )}
 
         <Pressable
-          onPress={() => resetPassword(email.trim())}
+          onPress={handleReset}
           disabled={isLoading || !email.trim()}
           style={({ pressed }) => ({
             backgroundColor: Colors.gold,

@@ -7,28 +7,52 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
-import { Link } from 'expo-router';
-import { useAuth } from '@fastshot/auth';
+import { Link, router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '@/lib/supabase';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const { signInWithEmail, isLoading, error } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) return;
-    await signInWithEmail(email.trim(), password);
+    setError(null);
+    setIsLoading(true);
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+      } else {
+        // Navigate back to the app — user is now signed in
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.replace('/(tabs)');
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.bg }} behavior="padding">
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: Colors.bg }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -39,6 +63,15 @@ export default function LoginScreen() {
         }}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Close button */}
+        <Pressable
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
+          style={{ position: 'absolute', top: insets.top + 16, right: 20 }}
+          hitSlop={12}
+        >
+          <Ionicons name="close" size={26} color={Colors.muted} />
+        </Pressable>
+
         {/* Logo */}
         <View style={{ alignItems: 'center', marginBottom: 48 }}>
           <View
@@ -64,7 +97,7 @@ export default function LoginScreen() {
             MetroRide NYC
           </Text>
           <Text style={{ fontFamily: Fonts.regular, fontSize: 14, color: Colors.muted, marginTop: 6 }}>
-            Sign in to your account
+            Sign in to sync your ride data
           </Text>
         </View>
 
@@ -121,8 +154,8 @@ export default function LoginScreen() {
           </View>
 
           {error && (
-            <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.red }}>
-              {error.message}
+            <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.red }} selectable>
+              {error}
             </Text>
           )}
 
@@ -168,6 +201,16 @@ export default function LoginScreen() {
             </Pressable>
           </Link>
         </View>
+
+        {/* Skip prompt */}
+        <Pressable
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
+          style={{ alignItems: 'center', marginTop: 16 }}
+        >
+          <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.muted }}>
+            Continue without an account →
+          </Text>
+        </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );

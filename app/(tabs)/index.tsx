@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuth } from '@fastshot/auth';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { useOMNY } from '@/hooks/useOMNY';
@@ -34,7 +34,7 @@ const SENTINEL_MESSAGES = [
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
-  const { user } = useAuth();
+  const { user } = useCurrentUser();
   const { tapCount, tapping, tap, isUnlimited, ridesLeft, progress, fetchTaps } = useOMNY(
     user?.id ?? null
   );
@@ -111,7 +111,7 @@ export default function HomeScreen() {
               MetroRide NYC
             </Text>
             <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted }}>
-              {user ? `Hi, ${user.email?.split('@')[0]}` : 'NYC Subway Companion'}
+              NYC Subway Companion
             </Text>
           </View>
           <Pressable

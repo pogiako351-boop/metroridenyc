@@ -11,12 +11,13 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuth } from '@fastshot/auth';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { Ionicons } from '@expo/vector-icons';
 import { getSavedRoutes, addSavedRoute, deleteSavedRoute } from '@/lib/supabase';
 import { adapty, shouldEnableMock } from 'react-native-adapty';
+import { router } from 'expo-router';
 
 const ADAPTY_KEY = process.env.EXPO_PUBLIC_ADAPTY_API_KEY ?? 'mock';
 
@@ -52,9 +53,52 @@ function RouteLineBadge({ station }: { station: string }) {
   );
 }
 
+/** Banner shown to anonymous users inviting them to sign up — never a gate */
+function SignUpBanner() {
+  return (
+    <Pressable
+      onPress={() => router.push('/(auth)/signup')}
+      style={({ pressed }) => ({
+        backgroundColor: pressed ? '#1F1A00' : Colors.card,
+        borderRadius: 20,
+        borderCurve: 'continuous',
+        padding: 18,
+        borderWidth: 1,
+        borderColor: Colors.gold + '55',
+        gap: 10,
+      })}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <View
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            borderCurve: 'continuous',
+            backgroundColor: Colors.gold + '22',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Ionicons name="sync-outline" size={22} color={Colors.gold} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontFamily: Fonts.bold, fontSize: 15, color: Colors.white }}>
+            Sync across devices
+          </Text>
+          <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted }}>
+            Create an account to keep your tap history & saved routes
+          </Text>
+        </View>
+        <Ionicons name="chevron-forward" size={16} color={Colors.muted} />
+      </View>
+    </Pressable>
+  );
+}
+
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
-  const { user, signOut } = useAuth();
+  const { user, isAnonymous, signOut } = useCurrentUser();
   const [smartAlarm, setSmartAlarm] = useState(true);
   const [isPro, setIsPro] = useState(false);
   const [routes, setRoutes] = useState<SavedRoute[]>([]);
@@ -73,9 +117,12 @@ export default function ProfileScreen() {
   }, []);
 
   useEffect(() => {
-    if (user) loadRoutes();
+    // Load saved routes for all users (anonymous or real) who have a user_id
+    if (user && !isAnonymous) {
+      loadRoutes();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, isAnonymous]);
 
   const loadProStatus = async () => {
     try {
@@ -161,21 +208,7 @@ export default function ProfileScreen() {
     ]);
   };
 
-  if (!user) {
-    return (
-      <View style={{ flex: 1, backgroundColor: Colors.bg, alignItems: 'center', justifyContent: 'center', gap: 16, paddingHorizontal: 28 }}>
-        <Text style={{ fontSize: 48 }}>👤</Text>
-        <Text style={{ fontFamily: Fonts.bold, fontSize: 22, color: Colors.white }}>
-          Sign In Required
-        </Text>
-        <Text style={{ fontFamily: Fonts.regular, fontSize: 14, color: Colors.muted, textAlign: 'center' }}>
-          Create an account or sign in to access your profile, saved routes, and Pro features.
-        </Text>
-      </View>
-    );
-  }
-
-  const displayName = user.email?.split('@')[0] ?? 'Rider';
+  const displayName = user?.email?.split('@')[0] ?? 'Rider';
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bg }}>
@@ -188,7 +221,7 @@ export default function ProfileScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* User info */}
+        {/* User info card */}
         <View
           style={{
             backgroundColor: Colors.card,
@@ -207,24 +240,45 @@ export default function ProfileScreen() {
               width: 56,
               height: 56,
               borderRadius: 28,
-              backgroundColor: Colors.gold,
+              backgroundColor: isAnonymous ? Colors.border : Colors.gold,
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontFamily: Fonts.bold, fontSize: 22, color: '#000' }}>
-              {displayName.charAt(0).toUpperCase()}
-            </Text>
+            {isAnonymous ? (
+              <Ionicons name="person-outline" size={26} color={Colors.muted} />
+            ) : (
+              <Text style={{ fontFamily: Fonts.bold, fontSize: 22, color: '#000' }}>
+                {displayName.charAt(0).toUpperCase()}
+              </Text>
+            )}
           </View>
           <View style={{ flex: 1 }}>
             <Text style={{ fontFamily: Fonts.bold, fontSize: 17, color: Colors.white }}>
-              {displayName}
+              {isAnonymous ? 'Anonymous Rider' : displayName}
             </Text>
             <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.muted }} selectable>
-              {user.email}
+              {isAnonymous ? 'Riding without an account' : user?.email ?? ''}
             </Text>
           </View>
+          {/* Optional login/signup link for anonymous users */}
+          {isAnonymous && (
+            <Pressable
+              onPress={() => router.push('/(auth)/login')}
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? Colors.goldDark : Colors.gold,
+                borderRadius: 20,
+                paddingHorizontal: 14,
+                paddingVertical: 7,
+              })}
+            >
+              <Text style={{ fontFamily: Fonts.bold, fontSize: 12, color: '#000' }}>Sign In</Text>
+            </Pressable>
+          )}
         </View>
+
+        {/* Sync nudge for anonymous users */}
+        {isAnonymous && <SignUpBanner />}
 
         {/* MetroRide Genius (Pro) */}
         <View
@@ -288,73 +342,75 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Saved Routes */}
-        <View
-          style={{
-            backgroundColor: Colors.card,
-            borderRadius: 20,
-            borderCurve: 'continuous',
-            padding: 18,
-            borderWidth: 1,
-            borderColor: Colors.border,
-            gap: 12,
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.white }}>
-              Saved Routes
-            </Text>
-            <Pressable
-              onPress={() => setAddRouteModal(true)}
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 14,
-                backgroundColor: Colors.gold,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              hitSlop={8}
-            >
-              <Ionicons name="add" size={18} color="#000" />
-            </Pressable>
-          </View>
-
-          {loadingRoutes ? (
-            <ActivityIndicator color={Colors.gold} />
-          ) : routes.length === 0 ? (
-            <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.muted, textAlign: 'center', paddingVertical: 12 }}>
-              No saved routes yet. Tap + to add one.
-            </Text>
-          ) : (
-            routes.map((route, i) => (
-              <View
-                key={route.id}
+        {/* Saved Routes — only for signed-in users */}
+        {!isAnonymous && (
+          <View
+            style={{
+              backgroundColor: Colors.card,
+              borderRadius: 20,
+              borderCurve: 'continuous',
+              padding: 18,
+              borderWidth: 1,
+              borderColor: Colors.border,
+              gap: 12,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.white }}>
+                Saved Routes
+              </Text>
+              <Pressable
+                onPress={() => setAddRouteModal(true)}
                 style={{
-                  flexDirection: 'row',
+                  width: 28,
+                  height: 28,
+                  borderRadius: 14,
+                  backgroundColor: Colors.gold,
                   alignItems: 'center',
-                  paddingVertical: 10,
-                  borderTopWidth: i > 0 ? 1 : 0,
-                  borderTopColor: Colors.border,
-                  gap: 10,
+                  justifyContent: 'center',
                 }}
+                hitSlop={8}
               >
-                <RouteLineBadge station={route.start_station} />
-                <Text style={{ fontFamily: Fonts.semiBold, fontSize: 14, color: Colors.white, flex: 1 }}>
-                  {route.start_station}
-                </Text>
-                <Ionicons name="arrow-forward" size={14} color={Colors.muted} />
-                <RouteLineBadge station={route.end_station} />
-                <Text style={{ fontFamily: Fonts.semiBold, fontSize: 14, color: Colors.white, flex: 1 }}>
-                  {route.end_station}
-                </Text>
-                <Pressable onPress={() => handleDeleteRoute(route.id)} hitSlop={10}>
-                  <Ionicons name="trash-outline" size={16} color={Colors.muted} />
-                </Pressable>
-              </View>
-            ))
-          )}
-        </View>
+                <Ionicons name="add" size={18} color="#000" />
+              </Pressable>
+            </View>
+
+            {loadingRoutes ? (
+              <ActivityIndicator color={Colors.gold} />
+            ) : routes.length === 0 ? (
+              <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.muted, textAlign: 'center', paddingVertical: 12 }}>
+                No saved routes yet. Tap + to add one.
+              </Text>
+            ) : (
+              routes.map((route, i) => (
+                <View
+                  key={route.id}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 10,
+                    borderTopWidth: i > 0 ? 1 : 0,
+                    borderTopColor: Colors.border,
+                    gap: 10,
+                  }}
+                >
+                  <RouteLineBadge station={route.start_station} />
+                  <Text style={{ fontFamily: Fonts.semiBold, fontSize: 14, color: Colors.white, flex: 1 }}>
+                    {route.start_station}
+                  </Text>
+                  <Ionicons name="arrow-forward" size={14} color={Colors.muted} />
+                  <RouteLineBadge station={route.end_station} />
+                  <Text style={{ fontFamily: Fonts.semiBold, fontSize: 14, color: Colors.white, flex: 1 }}>
+                    {route.end_station}
+                  </Text>
+                  <Pressable onPress={() => handleDeleteRoute(route.id)} hitSlop={10}>
+                    <Ionicons name="trash-outline" size={16} color={Colors.muted} />
+                  </Pressable>
+                </View>
+              ))
+            )}
+          </View>
+        )}
 
         {/* Notification Preferences */}
         <View
@@ -389,23 +445,25 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Sign Out */}
-        <Pressable
-          onPress={handleSignOut}
-          style={({ pressed }) => ({
-            backgroundColor: pressed ? '#2a1010' : Colors.card,
-            borderRadius: 14,
-            borderCurve: 'continuous',
-            padding: 16,
-            alignItems: 'center',
-            borderWidth: 1,
-            borderColor: Colors.red + '44',
-          })}
-        >
-          <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.red }}>
-            Sign Out
-          </Text>
-        </Pressable>
+        {/* Sign Out — shown only for real (non-anonymous) users */}
+        {!isAnonymous && (
+          <Pressable
+            onPress={handleSignOut}
+            style={({ pressed }) => ({
+              backgroundColor: pressed ? '#2a1010' : Colors.card,
+              borderRadius: 14,
+              borderCurve: 'continuous',
+              padding: 16,
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: Colors.red + '44',
+            })}
+          >
+            <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.red }}>
+              Sign Out
+            </Text>
+          </Pressable>
+        )}
       </ScrollView>
 
       {/* Add Route Modal */}

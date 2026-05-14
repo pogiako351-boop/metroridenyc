@@ -7,25 +7,43 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
-import { Link } from 'expo-router';
-import { useAuth } from '@fastshot/auth';
+import { Link, router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Fonts } from '@/constants/Typography';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '@/lib/supabase';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { signUpWithEmail, isLoading, error, pendingEmailVerification } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pendingVerification, setPendingVerification] = useState(false);
   const insets = useSafeAreaInsets();
 
   const handleSignUp = async () => {
     if (!email.trim() || !password.trim()) return;
-    await signUpWithEmail(email.trim(), password);
+    setError(null);
+    setIsLoading(true);
+    try {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+      } else {
+        setPendingVerification(true);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (pendingEmailVerification) {
+  if (pendingVerification) {
     return (
       <View
         style={{
@@ -44,28 +62,30 @@ export default function SignUpScreen() {
           We sent a verification link to{'\n'}
           <Text style={{ color: Colors.gold }}>{email}</Text>
         </Text>
-        <Link href="/(auth)/login" asChild>
-          <Pressable
-            style={{
-              marginTop: 32,
-              backgroundColor: Colors.card,
-              borderRadius: 12,
-              borderCurve: 'continuous',
-              paddingVertical: 14,
-              paddingHorizontal: 28,
-            }}
-          >
-            <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.white }}>
-              Back to Sign In
-            </Text>
-          </Pressable>
-        </Link>
+        <Pressable
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
+          style={({ pressed }) => ({
+            marginTop: 32,
+            backgroundColor: pressed ? Colors.border : Colors.card,
+            borderRadius: 12,
+            borderCurve: 'continuous',
+            paddingVertical: 14,
+            paddingHorizontal: 28,
+          })}
+        >
+          <Text style={{ fontFamily: Fonts.semiBold, fontSize: 15, color: Colors.white }}>
+            Back to App
+          </Text>
+        </Pressable>
       </View>
     );
   }
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: Colors.bg }} behavior="padding">
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: Colors.bg }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView
         contentContainerStyle={{
           flexGrow: 1,
@@ -76,6 +96,15 @@ export default function SignUpScreen() {
         }}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Close button */}
+        <Pressable
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
+          style={{ position: 'absolute', top: insets.top + 16, right: 20 }}
+          hitSlop={12}
+        >
+          <Ionicons name="close" size={26} color={Colors.muted} />
+        </Pressable>
+
         <View style={{ alignItems: 'center', marginBottom: 48 }}>
           <View
             style={{
@@ -95,7 +124,7 @@ export default function SignUpScreen() {
             Create Account
           </Text>
           <Text style={{ fontFamily: Fonts.regular, fontSize: 14, color: Colors.muted, marginTop: 6 }}>
-            Join MetroRide NYC
+            Sync your ride data across devices
           </Text>
         </View>
 
@@ -139,21 +168,21 @@ export default function SignUpScreen() {
           />
 
           {error && (
-            <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.red }}>
-              {error.message}
+            <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.red }} selectable>
+              {error}
             </Text>
           )}
 
           <Pressable
             onPress={handleSignUp}
-            disabled={isLoading}
+            disabled={isLoading || !email.trim() || !password.trim()}
             style={({ pressed }) => ({
               backgroundColor: Colors.gold,
               borderRadius: 14,
               borderCurve: 'continuous',
               padding: 16,
               alignItems: 'center',
-              opacity: pressed ? 0.85 : 1,
+              opacity: pressed || !email.trim() || !password.trim() ? 0.7 : 1,
               marginTop: 6,
             })}
           >
@@ -179,6 +208,16 @@ export default function SignUpScreen() {
             </Pressable>
           </Link>
         </View>
+
+        {/* Skip prompt */}
+        <Pressable
+          onPress={() => router.canGoBack() ? router.back() : router.replace('/(tabs)')}
+          style={{ alignItems: 'center', marginTop: 16 }}
+        >
+          <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: Colors.muted }}>
+            Continue without an account →
+          </Text>
+        </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
