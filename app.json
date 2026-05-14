@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MetroRide NYC",
-    "slug": "metroride-nyc",
+    "name": "MetrorideNYC",
+    "slug": "metroridenyc",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/mgenie-app-icon.png",
@@ -26,7 +26,7 @@
       "favicon": "./assets/images/mgenie-app-icon.png",
       "name": "MetroRide NYC",
       "shortName": "MetroRide",
-      "description": "Your intelligent NYC subway companion — live arrivals, OMNY tracking & AI alerts.",
+      "description": "Your intelligent NYC subway companion \u2014 live arrivals, OMNY tracking & AI alerts.",
       "themeColor": "#1A1A1A",
       "backgroundColor": "#1A1A1A",
       "scope": "/nyc/",
