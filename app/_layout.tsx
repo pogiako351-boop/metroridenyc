@@ -1,9 +1,14 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
-import { FontMap } from "@/constants/Typography";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import 'react-native-url-polyfill/auto';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useFonts } from 'expo-font';
+import { FontMap } from '@/constants/Typography';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AuthProvider } from '@fastshot/auth';
+import { supabase } from '@/lib/supabase';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,15 +26,24 @@ export default function RootLayout() {
   }
 
   return (
-    <>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" />
-      </Stack>
-    </>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <AuthProvider
+          supabaseClient={supabase}
+          routes={{
+            login: '/(auth)/login',
+            afterLogin: '/(tabs)',
+          }}
+        >
+          <StatusBar style="light" />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="train-detail" options={{ presentation: 'card' }} />
+            <Stack.Screen name="auth/callback" />
+          </Stack>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
