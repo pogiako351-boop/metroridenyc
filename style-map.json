@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": 1778775325970,
+  "generatedAt": 1778775600148,
   "entries": {
     "Index@app/index.tsx:61": {
       "element": {
@@ -2279,26 +2279,6 @@
               "col": 61,
               "endCol": 63,
               "raw": "11"
-            }
-          }
-        }
-      ]
-    },
-    "RootLayout@app/_layout.tsx:35": {
-      "element": {
-        "file": "app/_layout.tsx",
-        "line": 35
-      },
-      "styles": [
-        {
-          "origin": "inline",
-          "file": "app/_layout.tsx",
-          "properties": {
-            "flex": {
-              "line": 35,
-              "col": 43,
-              "endCol": 44,
-              "raw": "1"
             }
           }
         }
@@ -10317,6 +10297,232 @@
               "col": 124,
               "endCol": 126,
               "raw": "16"
+            }
+          }
+        }
+      ]
+    },
+    "RootLayout@app/_layout.tsx:50": {
+      "element": {
+        "file": "app/_layout.tsx",
+        "line": 50
+      },
+      "styles": [
+        {
+          "origin": "inline",
+          "file": "app/_layout.tsx",
+          "properties": {
+            "flex": {
+              "line": 50,
+              "col": 45,
+              "endCol": 46,
+              "raw": "1"
+            }
+          }
+        }
+      ]
+    },
+    "components/ErrorBoundary.tsx:43": {
+      "element": {
+        "file": "components/ErrorBoundary.tsx",
+        "line": 43
+      },
+      "styles": [
+        {
+          "origin": "stylesheet",
+          "ref": "styles.container",
+          "file": "components/ErrorBoundary.tsx",
+          "defLine": 59,
+          "properties": {
+            "flex": {
+              "line": 60,
+              "col": 10,
+              "endCol": 11,
+              "raw": "1"
+            },
+            "backgroundColor": {
+              "line": 61,
+              "col": 21,
+              "endCol": 30,
+              "raw": "'#121212'"
+            },
+            "alignItems": {
+              "line": 62,
+              "col": 16,
+              "endCol": 24,
+              "raw": "'center'"
+            },
+            "justifyContent": {
+              "line": 63,
+              "col": 20,
+              "endCol": 28,
+              "raw": "'center'"
+            },
+            "padding": {
+              "line": 64,
+              "col": 13,
+              "endCol": 15,
+              "raw": "32"
+            },
+            "gap": {
+              "line": 65,
+              "col": 9,
+              "endCol": 11,
+              "raw": "16"
+            }
+          }
+        }
+      ]
+    },
+    "components/ErrorBoundary.tsx:44": {
+      "element": {
+        "file": "components/ErrorBoundary.tsx",
+        "line": 44
+      },
+      "styles": [
+        {
+          "origin": "stylesheet",
+          "ref": "styles.title",
+          "file": "components/ErrorBoundary.tsx",
+          "defLine": 67,
+          "properties": {
+            "color": {
+              "line": 68,
+              "col": 11,
+              "endCol": 20,
+              "raw": "'#ffffff'"
+            },
+            "fontSize": {
+              "line": 69,
+              "col": 14,
+              "endCol": 16,
+              "raw": "20"
+            },
+            "fontWeight": {
+              "line": 70,
+              "col": 16,
+              "endCol": 21,
+              "raw": "'600'"
+            }
+          }
+        }
+      ]
+    },
+    "components/ErrorBoundary.tsx:45": {
+      "element": {
+        "file": "components/ErrorBoundary.tsx",
+        "line": 45
+      },
+      "styles": [
+        {
+          "origin": "stylesheet",
+          "ref": "styles.message",
+          "file": "components/ErrorBoundary.tsx",
+          "defLine": 72,
+          "properties": {
+            "color": {
+              "line": 73,
+              "col": 11,
+              "endCol": 20,
+              "raw": "'#888888'"
+            },
+            "fontSize": {
+              "line": 74,
+              "col": 14,
+              "endCol": 16,
+              "raw": "14"
+            },
+            "textAlign": {
+              "line": 75,
+              "col": 15,
+              "endCol": 23,
+              "raw": "'center'"
+            },
+            "lineHeight": {
+              "line": 76,
+              "col": 16,
+              "endCol": 18,
+              "raw": "20"
+            }
+          }
+        }
+      ]
+    },
+    "components/ErrorBoundary.tsx:48": {
+      "element": {
+        "file": "components/ErrorBoundary.tsx",
+        "line": 48
+      },
+      "styles": [
+        {
+          "origin": "stylesheet",
+          "ref": "styles.button",
+          "file": "components/ErrorBoundary.tsx",
+          "defLine": 78,
+          "properties": {
+            "marginTop": {
+              "line": 79,
+              "col": 15,
+              "endCol": 16,
+              "raw": "8"
+            },
+            "backgroundColor": {
+              "line": 80,
+              "col": 21,
+              "endCol": 30,
+              "raw": "'#1e6acc'"
+            },
+            "borderRadius": {
+              "line": 81,
+              "col": 18,
+              "endCol": 20,
+              "raw": "12"
+            },
+            "paddingHorizontal": {
+              "line": 82,
+              "col": 23,
+              "endCol": 25,
+              "raw": "24"
+            },
+            "paddingVertical": {
+              "line": 83,
+              "col": 21,
+              "endCol": 23,
+              "raw": "12"
+            }
+          }
+        }
+      ]
+    },
+    "components/ErrorBoundary.tsx:49": {
+      "element": {
+        "file": "components/ErrorBoundary.tsx",
+        "line": 49
+      },
+      "styles": [
+        {
+          "origin": "stylesheet",
+          "ref": "styles.buttonText",
+          "file": "components/ErrorBoundary.tsx",
+          "defLine": 85,
+          "properties": {
+            "color": {
+              "line": 86,
+              "col": 11,
+              "endCol": 20,
+              "raw": "'#ffffff'"
+            },
+            "fontSize": {
+              "line": 87,
+              "col": 14,
+              "endCol": 16,
+              "raw": "15"
+            },
+            "fontWeight": {
+              "line": 88,
+              "col": 16,
+              "endCol": 21,
+              "raw": "'600'"
             }
           }
         }

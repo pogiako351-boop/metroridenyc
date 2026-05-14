@@ -9,8 +9,11 @@ export type Region = 'NYC' | 'LA' | 'CHI' | 'SF';
 
 // Force NYC for this deployment — driven by EXPO_PUBLIC_APP_REGION env var
 // but always falls back to NYC as the canonical default.
+// The empty-string guard is critical for Netlify where the env var may be
+// set to "" rather than left completely undefined.
+const _envRegion = process.env.EXPO_PUBLIC_APP_REGION;
 export const ACTIVE_REGION: Region =
-  (process.env.EXPO_PUBLIC_APP_REGION as Region | undefined) ?? 'NYC';
+  (_envRegion && (_envRegion as Region)) || 'NYC';
 
 export interface RegionConfig {
   name: string;

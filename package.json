@@ -3,7 +3,8 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "build:web": "expo export -p web && cp public/_redirects dist/_redirects"
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
