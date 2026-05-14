@@ -64,7 +64,7 @@ export default function TrainsScreen() {
         />
         {/* Section title */}
         <Text style={{ fontFamily: Fonts.bold, fontSize: 20, color: Colors.white, marginBottom: 12 }}>
-          Live Trains
+          NYC Subway — Live
         </Text>
 
         {/* Feed error banner */}
@@ -85,7 +85,7 @@ export default function TrainsScreen() {
           >
             <Ionicons name="warning-outline" size={16} color={Colors.red} />
             <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted, flex: 1 }}>
-              Live feed unavailable. Showing estimated times.
+              MTA Status feed unavailable. Showing estimated times.
             </Text>
           </View>
         )}
@@ -149,14 +149,14 @@ export default function TrainsScreen() {
           <View style={{ alignItems: 'center', paddingVertical: 60, gap: 16 }}>
             <ActivityIndicator color={Colors.gold} size="large" />
             <Text style={{ fontFamily: Fonts.regular, fontSize: 14, color: Colors.muted }}>
-              Fetching live arrivals…
+              Fetching MTA Status & live subway arrivals…
             </Text>
           </View>
         ) : filtered.length === 0 ? (
           <View style={{ alignItems: 'center', paddingVertical: 60 }}>
             <Text style={{ fontSize: 40, marginBottom: 12 }}>🚉</Text>
             <Text style={{ fontFamily: Fonts.semiBold, fontSize: 16, color: Colors.muted }}>
-              No trains on this line right now
+              No subway trains on this line right now
             </Text>
           </View>
         ) : (

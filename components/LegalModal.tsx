@@ -51,6 +51,66 @@ function Divider() {
   );
 }
 
+/** Zero-Footprint badge — prominently displayed in the legal modal */
+function ZeroFootprintBadge() {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        backgroundColor: Colors.green + '0F',
+        borderRadius: 16,
+        borderCurve: 'continuous',
+        borderWidth: 1,
+        borderColor: Colors.green + '44',
+        padding: 14,
+        marginBottom: 16,
+      }}
+    >
+      {/* Shield icon */}
+      <View
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          backgroundColor: Colors.green + '20',
+          borderWidth: 1.5,
+          borderColor: Colors.green + '55',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
+        <Ionicons name="shield-checkmark" size={22} color={Colors.green} />
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+          <Text style={{ fontFamily: Fonts.bold, fontSize: 14, color: Colors.green }}>
+            Zero-Footprint Verified
+          </Text>
+          <View
+            style={{
+              backgroundColor: Colors.green + '33',
+              borderRadius: 6,
+              paddingHorizontal: 6,
+              paddingVertical: 2,
+            }}
+          >
+            <Text style={{ fontFamily: Fonts.bold, fontSize: 9, color: Colors.green, letterSpacing: 0.5 }}>
+              CERTIFIED
+            </Text>
+          </View>
+        </View>
+        <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.green + 'CC', lineHeight: 17 }}>
+          Your transit data never leaves your device. No tracking. No profiling. Ever.
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 export default function LegalModal({ visible, onClose }: Props) {
   const insets = useSafeAreaInsets();
 
@@ -70,7 +130,7 @@ export default function LegalModal({ visible, onClose }: Props) {
             backgroundColor: '#1E1E1E',
             borderTopLeftRadius: 28,
             borderTopRightRadius: 28,
-            maxHeight: '88%',
+            maxHeight: '90%',
             borderWidth: 1,
             borderColor: Colors.border,
             borderBottomWidth: 0,
@@ -140,12 +200,15 @@ export default function LegalModal({ visible, onClose }: Props) {
             contentContainerStyle={{
               paddingHorizontal: 22,
               paddingTop: 20,
-              paddingBottom: insets.bottom + 24,
+              paddingBottom: insets.bottom + 28,
             }}
             showsVerticalScrollIndicator={false}
           >
-            {/* Section 1: Independent Service Disclaimer */}
-            <SectionHeader icon="information-circle-outline" title="Independent Service Disclaimer" />
+            {/* Zero-Footprint Badge — always first and prominent */}
+            <ZeroFootprintBadge />
+
+            {/* Section 1: MTA Non-Affiliation Disclaimer */}
+            <SectionHeader icon="information-circle-outline" title="MTA Non-Affiliation Disclaimer" />
             <View
               style={{
                 backgroundColor: '#FF6319' + '0F',
@@ -160,19 +223,21 @@ export default function LegalModal({ visible, onClose }: Props) {
               <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: '#E8E8E8', lineHeight: 20 }}>
                 MetroRide NYC is an{' '}
                 <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>independent utility application</Text>
-                {' '}developed and maintained by independent developers. This app is{' '}
-                <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>not affiliated with, endorsed by, sponsored by, or in any way officially connected</Text>
-                {' '}to the Metropolitan Transportation Authority (MTA), New York City Transit (NYCT), or any of their subsidiaries or affiliates.
+                {' '}and is{' '}
+                <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>NOT affiliated with, endorsed by, or officially connected</Text>
+                {' '}to the{' '}
+                <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>Metropolitan Transportation Authority (MTA)</Text>
+                , New York City Transit (NYCT), or any of their subsidiaries.
               </Text>
             </View>
             <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted, marginTop: 8, lineHeight: 18 }}>
-              All MTA and NYC Transit trademarks, service marks, trade names, and logos are the property of the Metropolitan Transportation Authority. Use of these references is solely for user-facing informational purposes under nominative fair use.
+              {'"MTA," "NYC Subway," "OMNY," and related marks are trademarks of the Metropolitan Transportation Authority. Their use herein is solely for informational purposes under nominative fair use. MetroRide NYC is an independent product not produced by or in partnership with the MTA.'}
             </Text>
 
             <Divider />
 
-            {/* Section 2: Data Accuracy & Reliability */}
-            <SectionHeader icon="analytics-outline" title="Data Accuracy & Reliability" />
+            {/* Section 2: MTA Status & Live Data */}
+            <SectionHeader icon="analytics-outline" title="Subway Status & Data Accuracy" />
             <View
               style={{
                 backgroundColor: Colors.gold + '0D',
@@ -185,25 +250,21 @@ export default function LegalModal({ visible, onClose }: Props) {
               }}
             >
               <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: '#E8E8E8', lineHeight: 20 }}>
-                All transit data — including real-time train arrivals, departure estimates, and service alerts — is sourced from the{' '}
+                Live subway arrivals and MTA Status data are sourced from the{' '}
                 <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>MTA GTFS-Realtime public feeds</Text>
-                {' '}and is provided{' '}
-                <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>{'\"AS IS\"'}</Text>
-                {' '}without any warranty of accuracy, completeness, or fitness for any particular purpose.
+                {' '}and provided{' '}
+                <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>{"\"AS IS\""}</Text>
+                {' '}without warranty of accuracy, completeness, or fitness for any purpose.
               </Text>
             </View>
             <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted, marginTop: 8, lineHeight: 18 }}>
-              Arrival and departure estimates are{' '}
-              <Text style={{ fontFamily: Fonts.semiBold, color: Colors.muted }}>algorithmically derived</Text>
-              {' '}from live feed data and may not reflect actual train positions or schedules. Service disruptions, express/local changes, and real-world delays may not always be reflected in a timely manner. Do not rely solely on this app for time-critical transit decisions.
-            </Text>
-            <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted, marginTop: 8, lineHeight: 18 }}>
-              MetroRide NYC makes no representations regarding the accuracy of OMNY tap counting. Always verify your tap count and fare status with the official MTA OMNY system.
+              Arrival estimates are algorithmically derived from live feed data. Service disruptions, express/local changes, and real-world delays may not always be reflected in a timely manner. Do not rely solely on this app for time-critical transit decisions.{'\n\n'}
+              MetroRide NYC makes no representations about OMNY tap count accuracy. Always verify your tap count and fare status with the official MTA OMNY system.
             </Text>
 
             <Divider />
 
-            {/* Section 3: Zero-Footprint Privacy */}
+            {/* Section 3: Zero-Footprint Privacy Protocol */}
             <SectionHeader icon="lock-closed-outline" title="Zero-Footprint Privacy Protocol" />
             <View
               style={{
@@ -225,6 +286,8 @@ export default function LegalModal({ visible, onClose }: Props) {
               <Text style={{ fontFamily: Fonts.regular, fontSize: 13, color: '#E8E8E8', lineHeight: 20 }}>
                 All fare tracking history, OMNY tap records, and transit usage data are stored{' '}
                 <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>{'exclusively in your device\'s local storage'}</Text>
+                {' '}under the key{' '}
+                <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>metroride-nyc-v1</Text>
                 . This data is{' '}
                 <Text style={{ fontFamily: Fonts.semiBold, color: Colors.white }}>never transmitted to, stored on, or accessible by any central server</Text>
                 , including our own.
@@ -233,10 +296,11 @@ export default function LegalModal({ visible, onClose }: Props) {
 
             {/* Privacy bullets */}
             {[
-              { icon: 'phone-portrait-outline' as const, text: 'Tap history lives only on your device — not in the cloud.' },
+              { icon: 'phone-portrait-outline' as const, text: 'Tap history lives only on your device — stored locally at key "metroride-nyc-v1".' },
               { icon: 'eye-off-outline' as const, text: 'We do not collect, sell, or share any personal transit data.' },
-              { icon: 'person-remove-outline' as const, text: 'No account is required to use core transit features.' },
-              { icon: 'server-outline' as const, text: 'Anonymous sessions are used solely to enable optional sync features.' },
+              { icon: 'person-remove-outline' as const, text: 'No account required to use core NYC subway features.' },
+              { icon: 'server-outline' as const, text: 'Anonymous sessions are used solely to enable optional cross-device sync.' },
+              { icon: 'shield-checkmark-outline' as const, text: 'Zero third-party analytics, zero ad trackers.' },
             ].map(({ icon, text }, i) => (
               <View
                 key={i}
@@ -257,7 +321,28 @@ export default function LegalModal({ visible, onClose }: Props) {
             <Divider />
 
             {/* Footer */}
-            <View style={{ alignItems: 'center', gap: 6 }}>
+            <View style={{ alignItems: 'center', gap: 8 }}>
+              {/* Zero-footprint pill */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  backgroundColor: Colors.green + '18',
+                  borderRadius: 20,
+                  paddingHorizontal: 14,
+                  paddingVertical: 7,
+                  borderWidth: 1,
+                  borderColor: Colors.green + '33',
+                }}
+              >
+                <Ionicons name="shield-checkmark" size={12} color={Colors.green} />
+                <Text style={{ fontFamily: Fonts.semiBold, fontSize: 11, color: Colors.green }}>
+                  Zero-Footprint · No Tracking · Local Storage Only
+                </Text>
+              </View>
+
+              {/* MTA non-affiliation pill */}
               <View
                 style={{
                   flexDirection: 'row',
@@ -277,8 +362,10 @@ export default function LegalModal({ visible, onClose }: Props) {
                   · Independent Transit Companion
                 </Text>
               </View>
+
               <Text style={{ fontFamily: Fonts.regular, fontSize: 11, color: Colors.muted, textAlign: 'center', lineHeight: 16 }}>
-                Not affiliated with the MTA. Transit data sourced from public GTFS-RT feeds.{'\n'}
+                Not affiliated with the MTA or NYC Transit.{'\n'}
+                Transit data sourced from public MTA GTFS-RT feeds.{'\n'}
                 © 2026 MetroRide. All rights reserved.
               </Text>
             </View>

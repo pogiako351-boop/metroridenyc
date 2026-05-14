@@ -177,7 +177,7 @@ export default function HomeScreen() {
               marginBottom: 10,
             }}
           >
-            Nearest Trains
+            Nearby Stations
           </Text>
           {trainsLoading ? (
             <ActivityIndicator color={Colors.gold} style={{ marginVertical: 20 }} />

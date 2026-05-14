@@ -10,8 +10,9 @@ interface Props {
 }
 
 /**
- * Shared top header used by Home and Trains screens.
- * Displays the M-Genie logo centred with the "MetroRide NYC" wordmark.
+ * Shared top header for MetroRide NYC screens.
+ * Displays the Gold Train circular logo with the "MetroRide NYC" wordmark.
+ * NYC Subway branding — independent of MTA.
  */
 export default function BrandHeader({ rightAction }: Props) {
   return (
@@ -24,23 +25,39 @@ export default function BrandHeader({ rightAction }: Props) {
       }}
     >
       {/* Left spacer so logo+text are visually centred */}
-      <View style={{ width: 36 }} />
+      <View style={{ width: 38 }} />
 
-      {/* Logo + wordmark */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, justifyContent: 'center' }}>
-        <Image
-          source={require('@/assets/logos/mgenie-logo.png')}
-          style={{ width: 34, height: 34 }}
-          contentFit="contain"
-          transition={200}
-        />
+      {/* Gold Train logo + wordmark */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flex: 1, justifyContent: 'center' }}>
+        {/* Gold Train circular badge */}
+        <View
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: 19,
+            backgroundColor: Colors.bg,
+            borderWidth: 1.5,
+            borderColor: Colors.gold + '55',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+          }}
+        >
+          <Image
+            source={require('@/assets/images/metroride-nyc-icon.png')}
+            style={{ width: 38, height: 38 }}
+            contentFit="cover"
+            transition={200}
+          />
+        </View>
+
         <View>
           <Text
             style={{
               fontFamily: Fonts.bold,
               fontSize: 18,
               color: Colors.gold,
-              letterSpacing: 0.4,
+              letterSpacing: 0.5,
             }}
           >
             MetroRide{' '}
@@ -54,13 +71,13 @@ export default function BrandHeader({ rightAction }: Props) {
               letterSpacing: 0.2,
             }}
           >
-            M-Genie · NYC Subway Companion
+            NYC Subway Companion
           </Text>
         </View>
       </View>
 
       {/* Right action slot */}
-      <View style={{ width: 36, alignItems: 'flex-end' }}>
+      <View style={{ width: 38, alignItems: 'flex-end' }}>
         {rightAction ?? null}
       </View>
     </View>

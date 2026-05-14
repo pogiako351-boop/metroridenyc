@@ -1,17 +1,17 @@
 export const Colors = {
-  bg: '#1A1A1A',
-  card: '#2C2C2C',
-  cardHigh: '#383838',
-  gold: '#F5C518',
-  goldDark: '#D4A017',
+  bg: '#121212',
+  card: '#1E1E1E',
+  cardHigh: '#2A2A2A',
+  gold: '#D4AF37',
+  goldDark: '#B8960C',
   white: '#FFFFFF',
   muted: '#888888',
   green: '#4CAF50',
   yellow: '#FFC107',
   red: '#F44336',
   blue: '#2196F3',
-  border: '#3A3A3A',
-  overlay: 'rgba(0,0,0,0.6)',
+  border: '#2E2E2E',
+  overlay: 'rgba(0,0,0,0.7)',
 } as const;
 
 export const SubwayLines: Record<string, { bg: string; text: string }> = {

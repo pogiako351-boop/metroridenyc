@@ -482,7 +482,7 @@ export default function ProfileScreen() {
               Legal & Privacy
             </Text>
             <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted }}>
-              Disclaimer, data policy & zero-footprint protocol
+              MTA disclaimer, data policy & zero-footprint protocol
             </Text>
           </View>
           <Ionicons name="chevron-forward" size={16} color={Colors.muted} />

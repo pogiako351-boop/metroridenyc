@@ -105,7 +105,7 @@ export default function SavingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Text style={{ fontFamily: Fonts.bold, fontSize: 22, color: Colors.white }}>
-          Savings Dashboard
+          OMNY Savings Dashboard
         </Text>
 
         {loading ? (
