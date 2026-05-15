@@ -2,8 +2,8 @@
   "name": "MetroRide NYC",
   "short_name": "MetroRide NYC",
   "description": "Your intelligent NYC subway companion — live arrivals, OMNY tracking & AI-powered alerts.",
-  "start_url": "/nyc/",
-  "scope": "/nyc/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#121212",
@@ -28,14 +28,14 @@
       "name": "Subway Status",
       "short_name": "Subway",
       "description": "See live NYC subway arrivals and MTA Status",
-      "url": "/nyc/trains",
+      "url": "/trains",
       "icons": [{ "src": "/assets/images/metroride-nyc-icon.png", "sizes": "96x96" }]
     },
     {
       "name": "Nearby Stations",
       "short_name": "Stations",
       "description": "Find nearby NYC subway stations",
-      "url": "/nyc/",
+      "url": "/",
       "icons": [{ "src": "/assets/images/metroride-nyc-icon.png", "sizes": "96x96" }]
     }
   ]

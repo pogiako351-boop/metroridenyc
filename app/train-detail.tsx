@@ -42,7 +42,10 @@ export default function TrainDetailScreen() {
   const { line = 'A', vehicleId = '' } = useLocalSearchParams<{ line: string; vehicleId?: string }>();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { cars, isGhost } = useTrainCars(line);
+  const destination = line === 'A' ? 'to 207 St – Inwood'
+    : line === 'C' ? 'to 168 St'
+    : `to ${line} Terminal`;
+  const { cars, isGhost, isLiveOccupancy } = useTrainCars(line, destination);
   const lineStyle = SubwayLines[line] ?? { bg: Colors.muted, text: '#fff' };
 
   // Live arrival countdown for this specific train
@@ -51,10 +54,6 @@ export default function TrainDetailScreen() {
     loading: arrivalLoading,
     error: arrivalError,
   } = useTrainArrival(line, vehicleId);
-
-  const destination = line === 'A' ? 'to 207 St – Inwood'
-    : line === 'C' ? 'to 168 St'
-    : `to ${line} Terminal`;
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bg }}>
@@ -99,7 +98,7 @@ export default function TrainDetailScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 }}>
                 <Text style={{ fontSize: 12 }}>👻</Text>
                 <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.red }}>
-                  Ghost Train: No update in 195s
+                  Ghost Train — No update in 180s+
                 </Text>
               </View>
             )}
@@ -129,6 +128,29 @@ export default function TrainDetailScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Occupancy data status */}
+        {!isLiveOccupancy && (
+          <View
+            style={{
+              backgroundColor: Colors.gold + '15',
+              borderRadius: 10,
+              borderCurve: 'continuous',
+              padding: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+              marginBottom: 4,
+              borderWidth: 1,
+              borderColor: Colors.gold + '33',
+            }}
+          >
+            <Ionicons name="information-circle-outline" size={16} color={Colors.gold} />
+            <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.gold, flex: 1 }}>
+              Live occupancy unavailable — showing estimated crowding levels
+            </Text>
+          </View>
+        )}
+
         {/* Legend */}
         <View
           style={{

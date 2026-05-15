@@ -8,7 +8,7 @@ import type { PropsWithChildren } from 'react';
  *  - PWA manifest + apple-touch-icon / favicon linking
  *  - Service worker registration (sw.js) with Network-First/Cache-First
  *  - beforeinstallprompt capture with localStorage persistence
- *  - NYC theme meta tags (#121212 background, #D4AF37 accent)
+ *  - NYC theme meta tags (#121212 background, #FFD700 accent)
  */
 export default function Root({ children }: PropsWithChildren) {
   return (
@@ -118,7 +118,7 @@ export default function Root({ children }: PropsWithChildren) {
                 margin: 0;
               }
               #pwa-install-banner .banner-btn {
-                background: #D4AF37;
+                background: #FFD700;
                 color: #000000;
                 border: none;
                 border-radius: 20px;

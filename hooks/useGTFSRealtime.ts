@@ -308,18 +308,24 @@ async function fetchFeed(feedKey: string): Promise<GTFSTripUpdate[]> {
   const url = FEED_URLS[feedKey];
   if (!url) return [];
 
-  const response = await fetch(url, {
-    headers: {
-      'x-api-key': '0', // MTA public feeds don't require key; some proxies use 0
-    },
-  });
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'x-api-key': '0', // MTA public feeds don't require key; some proxies use 0
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error(`Feed ${feedKey} returned ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Feed ${feedKey} returned ${response.status}`);
+    }
+
+    const buffer = await response.arrayBuffer();
+    return parseGTFSBinary(buffer);
+  } catch (err) {
+    // Wrap network/parse errors with context
+    const message = err instanceof Error ? err.message : 'Unknown fetch error';
+    throw new Error(`[GTFS] ${feedKey}: ${message}`);
   }
-
-  const buffer = await response.arrayBuffer();
-  return parseGTFSBinary(buffer);
 }
 
 // Get earliest upcoming arrival at any stop for a trip (next stop arrival)
@@ -336,7 +342,7 @@ export function getNextArrivalTimestamp(update: GTFSTripUpdate): number | null {
 }
 
 // Aggregate all trip updates from needed feeds
-const POLL_INTERVAL_MS = 20000; // 20 seconds
+const POLL_INTERVAL_MS = 30000; // 30 seconds — balanced for real-time accuracy vs API load
 
 export function useGTFSRealtime(lines: string[]) {
   const [data, setData] = useState<GTFSRealtimeData>({

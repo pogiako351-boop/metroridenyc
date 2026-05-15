@@ -2,8 +2,8 @@ export const Colors = {
   bg: '#121212',
   card: '#1E1E1E',
   cardHigh: '#2A2A2A',
-  gold: '#D4AF37',
-  goldDark: '#B8960C',
+  gold: '#FFD700',
+  goldDark: '#C9A800',
   white: '#FFFFFF',
   muted: '#888888',
   green: '#4CAF50',
@@ -12,6 +12,10 @@ export const Colors = {
   blue: '#2196F3',
   border: '#2E2E2E',
   overlay: 'rgba(0,0,0,0.7)',
+  // Semantic aliases for consistency
+  warning: '#FFD700',   // Gold — used for alerts/warnings
+  error: '#F44336',     // Red — used for errors
+  success: '#4CAF50',   // Green — used for success states
 } as const;
 
 export const SubwayLines: Record<string, { bg: string; text: string }> = {

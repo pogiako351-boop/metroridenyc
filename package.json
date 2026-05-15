@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "lint": "expo lint",
+    "build": "expo export -p web && cp public/_redirects dist/_redirects",
     "build:web": "expo export -p web && cp public/_redirects dist/_redirects"
   },
   "dependencies": {

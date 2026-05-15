@@ -64,19 +64,25 @@ export default function TrainCard({ train, isLoading = false, hasError = false }
           {train.isGhost && (
             <View
               style={{
-                backgroundColor: '#333',
+                backgroundColor: Colors.red + '22',
                 borderRadius: 8,
                 paddingHorizontal: 6,
                 paddingVertical: 2,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 3,
+                borderWidth: 1,
+                borderColor: Colors.red + '44',
               }}
             >
-              <Text style={{ fontSize: 10, color: Colors.muted }}>👻 Ghost</Text>
+              <Text style={{ fontSize: 10 }}>👻</Text>
+              <Text style={{ fontSize: 10, fontFamily: Fonts.semiBold, color: Colors.red }}>Ghost Train</Text>
             </View>
           )}
         </View>
         {train.isGhost && (
           <Text style={{ fontFamily: Fonts.regular, fontSize: 11, color: Colors.red, marginTop: 2 }}>
-            No position update in {Math.round((Date.now() - train.lastUpdate) / 1000)}s
+            Ghost Train — No position update in {Math.round((Date.now() - train.lastUpdate) / 1000)}s
           </Text>
         )}
       </View>

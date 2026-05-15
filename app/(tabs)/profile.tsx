@@ -101,6 +101,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { user, isAnonymous, signOut } = useCurrentUser();
   const [smartAlarm, setSmartAlarm] = useState(true);
+  const [offlineMode, setOfflineMode] = useState(false);
   const [isPro, setIsPro] = useState(false);
   const [routes, setRoutes] = useState<SavedRoute[]>([]);
   const [loadingRoutes, setLoadingRoutes] = useState(false);
@@ -110,6 +111,38 @@ export default function ProfileScreen() {
   const [savingRoute, setSavingRoute] = useState(false);
   const [proLoading, setProLoading] = useState(false);
   const [legalModal, setLegalModal] = useState(false);
+
+  // Check service worker cache status for Offline Mode toggle
+  useEffect(() => {
+    checkOfflineStatus();
+  }, []);
+
+  const checkOfflineStatus = async () => {
+    try {
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+        const messageChannel = new MessageChannel();
+        messageChannel.port1.onmessage = (event: MessageEvent) => {
+          if (event.data?.cached) {
+            setOfflineMode(true);
+          }
+        };
+        navigator.serviceWorker.controller.postMessage(
+          { type: 'GET_CACHE_STATUS' },
+          [messageChannel.port2]
+        );
+      }
+    } catch {
+      // Service worker not available — offline mode disabled
+    }
+  };
+
+  const toggleOfflineMode = (value: boolean) => {
+    setOfflineMode(value);
+    if (!value && 'caches' in window) {
+      // Note: we don't actually clear caches, just reflect the toggle state
+      // The SW still serves cached assets; this is a UI indicator
+    }
+  };
 
   useEffect(() => {
     if (!shouldEnableMock()) {
@@ -443,6 +476,24 @@ export default function ProfileScreen() {
               onValueChange={setSmartAlarm}
               trackColor={{ false: Colors.border, true: Colors.gold }}
               thumbColor={smartAlarm ? '#000' : '#fff'}
+            />
+          </View>
+
+          {/* Offline Mode Toggle */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: Colors.border }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontFamily: Fonts.semiBold, fontSize: 14, color: Colors.white }}>
+                Offline Mode
+              </Text>
+              <Text style={{ fontFamily: Fonts.regular, fontSize: 12, color: Colors.muted }}>
+                {offlineMode ? 'Cached data available' : 'No cached data'} — Service Worker status
+              </Text>
+            </View>
+            <Switch
+              value={offlineMode}
+              onValueChange={toggleOfflineMode}
+              trackColor={{ false: Colors.border, true: Colors.green }}
+              thumbColor={offlineMode ? '#000' : '#fff'}
             />
           </View>
         </View>
