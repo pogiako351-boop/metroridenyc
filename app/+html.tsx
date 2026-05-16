@@ -43,6 +43,11 @@ export default function Root({ children }: PropsWithChildren) {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/assets/images/metroride-nyc-icon.png" />
 
+        {/* ── Google AdSense ── */}
+        <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossOrigin="anonymous" />
+        <script dangerouslySetInnerHTML={{ __html: `(adsbygoogle = window.adsbygoogle || []).push({ google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX", enable_page_level_ads: true });` }} />
+
         {/* ── Icons ───────────────────────────────────────── */}
         <link rel="icon" href="/assets/images/metroride-nyc-icon.png" type="image/png" />
         <link rel="shortcut icon" href="/assets/images/metroride-nyc-icon.png" />
