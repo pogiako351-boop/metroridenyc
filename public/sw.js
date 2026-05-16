@@ -12,19 +12,27 @@ const STATIC_CACHE = `metroride-nyc-static-${CACHE_VERSION}`;
 const API_CACHE = `metroride-nyc-api-${CACHE_VERSION}`;
 
 // Static assets to pre-cache on install (Cache-First)
+// Note: manifest.json excluded — it should always be fetched fresh
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/assets/images/metroride-nyc-icon.png',
-  '/manifest.json',
 ];
 
 // URL patterns that need Network-First (MTA real-time data)
 const NETWORK_FIRST_PATTERNS = [
   'api-endpoint.mta.info',
   'gtfs',
+  'mta',
   'supabase.co',
   '/api/',
+];
+
+// Files that should NEVER be cached with long TTL (always fresh)
+const NEVER_CACHE_LONG = [
+  '_redirects',
+  'manifest.json',
+  'sw.js',
 ];
 
 // Offline fallback HTML for when network is unavailable
@@ -117,6 +125,15 @@ self.addEventListener('fetch', (event) => {
 
   // Skip chrome-extension and other non-http schemes
   if (!url.protocol.startsWith('http')) return;
+
+  // Never long-cache certain files — always network-first
+  const isNeverCache = NEVER_CACHE_LONG.some(
+    (file) => url.pathname.endsWith(file)
+  );
+  if (isNeverCache) {
+    event.respondWith(networkFirst(request, STATIC_CACHE));
+    return;
+  }
 
   // Check if this is a Network-First request (MTA API / Supabase)
   const isNetworkFirst = NETWORK_FIRST_PATTERNS.some(

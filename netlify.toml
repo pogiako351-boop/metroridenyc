@@ -4,8 +4,34 @@
 
 [build.environment]
   EXPO_PUBLIC_APP_REGION = "NYC"
+  NODE_VERSION = "20"
 
+# SPA fallback — guarantees all routes resolve to index.html
+# This is a belt-and-suspenders approach alongside public/_redirects
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Cache static assets aggressively (hashed filenames from Metro bundler)
+[[headers]]
+  for = "/_expo/static/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Service worker must not be cached long-term
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# Manifest should be relatively fresh
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

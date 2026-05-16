@@ -12,14 +12,9 @@ const hasInspector = fs.existsSync(inspectorPath);
 const polyfillsPath = path.resolve(__dirname, 'webPolyfills.js');
 const hasPolyfills = fs.existsSync(polyfillsPath);
 
-// Disable minification for web builds
-config.transformer = {
-  ...config.transformer,
-  minifierConfig: {
-    compress: false,
-    mangle: false,
-  },
-};
+// Use Metro's default minification settings for production builds.
+// Previously disabled for debugging — re-enabled for smaller production bundles.
+// Metro's export command handles minification internally for web.
 
 // Add support for resolving modules
 config.resolver = {

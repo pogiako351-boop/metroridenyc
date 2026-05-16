@@ -1,9 +1,10 @@
 export const Colors = {
   bg: '#121212',
+  surface: '#1E1E1E',
   card: '#1E1E1E',
   cardHigh: '#2A2A2A',
   gold: '#FFD700',
-  goldDark: '#C9A800',
+  goldDark: '#D4AF37',
   white: '#FFFFFF',
   muted: '#888888',
   green: '#4CAF50',
@@ -13,7 +14,7 @@ export const Colors = {
   border: '#2E2E2E',
   overlay: 'rgba(0,0,0,0.7)',
   // Semantic aliases for consistency
-  warning: '#FFD700',   // Gold — used for alerts/warnings
+  warning: '#FFC107',   // Amber — used for warnings
   error: '#F44336',     // Red — used for errors
   success: '#4CAF50',   // Green — used for success states
 } as const;

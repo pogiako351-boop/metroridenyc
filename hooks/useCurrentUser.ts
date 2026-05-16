@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseAvailable } from '@/lib/supabase';
 
 interface CurrentUser {
   user: User | null;
@@ -14,6 +14,7 @@ interface CurrentUser {
  * Provides the current Supabase auth user.
  * Works with both anonymous users (from initAnonymousAuth) and fully authenticated users.
  * isAnonymous = true when the user was silently created via signInAnonymously.
+ * Gracefully handles missing Supabase configuration (offline mode).
  */
 export function useCurrentUser(): CurrentUser {
   const [user, setUser] = useState<User | null>(null);
@@ -21,10 +22,18 @@ export function useCurrentUser(): CurrentUser {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // If Supabase is unavailable, immediately resolve with no user
+    if (!isSupabaseAvailable) {
+      setIsLoading(false);
+      return;
+    }
+
     // Grab the current session on mount
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session ?? null);
       setUser(data.session?.user ?? null);
+      setIsLoading(false);
+    }).catch(() => {
       setIsLoading(false);
     });
 
@@ -39,6 +48,7 @@ export function useCurrentUser(): CurrentUser {
   }, []);
 
   const signOut = async () => {
+    if (!isSupabaseAvailable) return;
     await supabase.auth.signOut();
   };
 
